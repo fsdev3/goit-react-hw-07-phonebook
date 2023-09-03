@@ -1,19 +1,25 @@
 import { Contact } from 'components/Contact/Contact';
 import { useSelector } from 'react-redux/es/hooks/useSelector';
-import { getFilter, getContacts } from 'redux/selectors';
-import { useMemo } from 'react';
+
+import { useEffect } from 'react';
+import { selectVisibleContacts } from 'redux/selectors';
+import { useDispatch } from 'react-redux';
+import { fetchContacts } from 'redux/operations';
 
 export function ContactList() {
-  const contacts = useSelector(getContacts);
-  const filterValue = useSelector(getFilter);
+  const dispatch = useDispatch();
+  const visibleContacts = useSelector(selectVisibleContacts);
 
-  const visibleContacts = useMemo(() => {
-    return contacts.filter(contact => {
-      return contact.name.toLowerCase().includes(filterValue.toLowerCase(), 0);
-    });
-  }, [filterValue, contacts]);
+  useEffect(() => {
+    dispatch(fetchContacts('/contacts'));
+  }, [dispatch]);
 
-  return visibleContacts.map(item => {
-    return <Contact key={item.id} contact={item} id={item.id} />;
-  });
+  return (
+    <div>
+      {visibleContacts.length === 0 && <p>No contacts for your search</p>}
+      {visibleContacts.map(item => {
+        return <Contact key={item.id} contact={item} id={item.id} />;
+      })}
+    </div>
+  );
 }
