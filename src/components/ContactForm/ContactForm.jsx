@@ -12,7 +12,9 @@ export const ContactForm = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    const searchResult = contacts.find(contact => contact.name === name);
+    const searchResult = contacts.find(
+      contact => contact.name.toLowerCase() === name.toLowerCase()
+    );
     if (searchResult) {
       alert(`${name} is already in contacts`);
       return false;
